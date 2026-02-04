@@ -1,0 +1,35 @@
+@import url("./component-styles/Navbar.scss");
+@import url("./component-styles/Footer.scss");
+@import url("./pages-styles/Home.scss");
+@import url('https://fonts.googleapis.com/css2?family=League+Spartan:wght@100..900&display=swap');
+
+
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "League Spartan", sans-serif;
+
+    ::-webkit-scrollbar {
+  display: none;
+}
+/*Hide scrollbar in Firefox */
+* {
+  scrollbar-width: none; /* Firefox */
+}
+
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+.app-wrapper {
+  display: flex;
+  flex-direction: column;
+  min-height: 100dvh;
+}
+
+.content {
+  flex: 1; 
+}

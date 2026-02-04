@@ -1,0 +1,192 @@
+.navbar {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 100;
+
+  .navbar-container {
+    width: 95%;
+    max-width: 1200px; // Good practice to stop it stretching on huge screens
+    margin: 0 auto;
+
+    .navigation {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+      padding-block: 0.8rem; // Slightly more breathing room
+
+     @media (max-width: 768px) {
+      width: 90%;
+      margin: 0 auto;
+    }
+
+      .logo-container {
+        img {
+          width: 125px;
+          display: block; // Removes potential extra margin on images
+        }
+      }
+
+      /* Hamburger Icon - Hidden by default on Desktop */
+      .hamburger {
+        display: none;
+        cursor: pointer;
+      }
+
+      /* Wrapper for Links and CTA to manage them together */
+      .nav-menu {
+        display: flex;
+        align-items: center;
+        gap: 2rem;
+      }
+
+      .navigation-links {
+        display: flex;
+        gap: 2rem;
+        align-items: center;
+
+        /* Desktop Hover Effects (Spotlight & Underline) */
+        &:hover a {
+          opacity: 0.5;
+          filter: blur(0.5px);
+        }
+
+        a {
+          text-decoration: none;
+          color: #1f2937;
+          font-weight: 500;
+          font-size: 1rem;
+          position: relative;
+          transition: all 0.3s ease;
+
+          &:hover {
+            opacity: 1 !important;
+            filter: blur(0);
+            color: #865f1d;
+          }
+
+          /* Underline Animation */
+          &::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 2px;
+            bottom: -4px;
+            left: 0;
+            background-color: #865f1d;
+            transform: scaleX(0);
+            transform-origin: center;
+            transition: transform 0.3s cubic-bezier(0.65, 0, 0.35, 1);
+          }
+
+          &:hover::after {
+            transform: scaleX(1);
+          }
+        }
+      }
+
+      .navigation-cta {
+        button {
+          box-shadow: rgba(0, 0, 0, 0.05) 0px 1px 2px 0px;
+          background: #1a1a1a;
+          color: white;
+          font-weight: 500;
+          padding: 12px 24px; // Slightly wider button
+          border-radius: 50px; // Pill shape is trendier
+          cursor: pointer;
+          border: none;
+          transition: 0.3s ease;
+
+          &:hover {
+            background: #865f1d;
+            transform: translateY(-2px); // Subtle lift
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+          }
+        }
+      }
+    }
+  }
+
+  /* --- MOBILE RESPONSIVENESS --- */
+  @media (max-width: 768px) {
+    .navbar-container .navigation {
+      
+      // 1. Show the Hamburger
+      .hamburger {
+        display: block;
+        z-index: 101; // Ensure it sits above the menu
+      }
+
+      // 2. The Mobile Dropdown Menu
+      .nav-menu {
+        position: absolute;
+        top: 100%; // Push it directly below the navbar header
+        left: 0;
+        width: 100%;
+        background-color: white;
+        flex-direction: column; // Stack items vertically
+        align-items: center;
+        gap: 0; // Remove flex gap, use padding instead
+        
+        // Animation Initial State: Closed
+        max-height: 0;
+        overflow: hidden;
+        opacity: 0;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); // Shadow at bottom of menu
+
+        // Animation Active State: Open
+        &.active {
+          max-height: 450px; // Enough height to fit content
+          opacity: 1;
+          padding-bottom: 2rem;
+          border-top: 1px solid #f3f4f6;
+        }
+      }
+
+      // 3. Styling Links for Mobile
+      .navigation-links {
+        flex-direction: column;
+        gap: 0;
+        width: 100%;
+
+        // Disable the desktop spotlight hover effect on mobile
+        &:hover a { opacity: 1; filter: none; }
+
+        a {
+          width: 100%;
+          text-align: center;
+          padding: 1.5rem 0;
+          border-bottom: 1px solid #f3f4f6;
+          font-size: 1.1rem;
+          
+          // Disable underline animation on mobile
+          &::after { display: none; }
+          
+          &:hover { color: #865f1d; }
+        }
+      }
+
+      // 4. Styling CTA for Mobile
+      .navigation-cta {
+        margin-top: 2rem;
+        width: 100%;
+        display: flex;
+        justify-content: center;
+
+        button {
+          width: 80%; // Make button nice and wide on mobile
+          padding: 1rem;
+        }
+      }
+    }
+  }
+}
+
+.navbar.scrolled {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px); /* Safari */
+  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+}
