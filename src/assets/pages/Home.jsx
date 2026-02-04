@@ -1,6 +1,6 @@
 import React, {useState} from 'react'
 import { useGoogleReviews } from './useGoogleReviews'; // Import the hook
-import heroImg from "../stock/varenda.jpeg"
+import heroImg from "../stock/varenda.webp"
 import { CiBookmarkPlus } from "react-icons/ci";
 import { 
   FaPlay, 
@@ -24,12 +24,12 @@ import master1 from "../stock/master1.jpeg"
 import master2 from "../stock/master2.jpeg"
 import kitchen2 from "../stock/kitchen2.jpeg"
 import kitchen1 from "../stock/kitchen1.jpeg"
-import exterior1 from "../stock/exterior1.jpeg"
-import exterior2 from "../stock/exterior2.jpeg"
-import exterior3 from "../stock/exterior3.jpeg"
-import guest2 from "../stock/guest2.jpeg"
-import guest3 from "../stock/guest3.jpeg"
-import dining1 from "../stock/dining1.jpeg"
+import exterior1 from "../stock/exterior1.webp"
+import exterior2 from "../stock/exterior2.webp"
+import exterior3 from "../stock/exterior3.webp"
+import guest2 from "../stock/guest2.webp"
+import guest3 from "../stock/guest3.webp"
+import dining1 from "../stock/dining1.webp"
 import room1 from "../stock/room1.jpeg"
 import room2 from "../stock/room2.jpeg"
 
@@ -252,7 +252,8 @@ const [activeFilter, setActiveFilter] = useState('All');
           </div>
           
           <div className="hero-image">
-            <img src={heroImg} alt="Modern armchair" />
+            <img src={heroImg} alt="Hausswann Exterior" loading="eager"        // Load immediately
+            fetchPriority="high"/>
           </div>
         </div>
 
@@ -328,7 +329,8 @@ const [activeFilter, setActiveFilter] = useState('All');
             {/* Left: Image */}
             <div className="content-image">
               {/* You can swap this for a specific amenities image if you have one */}
-              <img src={heroImg} alt="Interior Amenities" />
+              <img src={heroImg} alt="Interior Amenities" loading="lazy"       // Only load when scrolled to
+                decoding="async"/>
             </div>
 
             {/* Right: Text Details */}
@@ -392,7 +394,10 @@ const [activeFilter, setActiveFilter] = useState('All');
               onClick={() => openLightbox(item)}
             >
               {/* Show the first image as the thumbnail */}
-              <img src={item.images[0]} alt={item.title} />
+              <img src={item.images[0]} alt={item.title} 
+              loading="lazy" 
+              decoding="async"
+              />
               
               {/* Badge showing number of photos */}
               {item.images.length > 1 && (
