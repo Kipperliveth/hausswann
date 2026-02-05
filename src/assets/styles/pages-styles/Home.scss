@@ -118,15 +118,105 @@ padding-top: 4.5rem;
       }
     }
 
-    .hero-image {
-      height: 500px;
-      img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        border-radius: $radius;
-      }
-    }
+/* --- Hero Slider Container --- */
+.hero-image-slider {
+  position: relative;
+  width: 100%;
+  height: 100%; /* Fill the existing grid area */
+  min-height: 500px; /* Ensure height on mobile */
+  border-radius: 20px; /* Matches your theme */
+  overflow: hidden;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+}
+
+/* --- The Images (Stacked) --- */
+.slider-item {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  transition: opacity 1.2s cubic-bezier(0.4, 0, 0.2, 1); /* Slow, luxury fade */
+  z-index: 1;
+}
+
+.slider-item.active {
+  opacity: 1;
+  z-index: 2;
+}
+
+.slider-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* --- The Timeline Indicators --- */
+.slider-timeline {
+  position: absolute;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  display: flex;
+  gap: 8px; /* Space between bars */
+  width: 80%; /* Width of the timeline container */
+}
+
+/* The Background Track (Grey line) */
+.timeline-track {
+  height: 3px; /* Thin line */
+  flex: 1; /* Distribute space evenly */
+  background-color: rgba(255, 255, 255, 0.3);
+  border-radius: 2px;
+  cursor: pointer;
+  overflow: hidden;
+  transition: height 0.3s ease;
+}
+
+/* Hover effect for interaction */
+.timeline-track:hover {
+  height: 5px; 
+  background-color: rgba(255, 255, 255, 0.5);
+}
+
+/* The Filling Bar (White/Gold) */
+.timeline-fill {
+  height: 100%;
+  width: 0%;
+  background-color: #ffffff; /* Or use your Gold #865f1d */
+  border-radius: 2px;
+}
+
+/* Status: Completed slides stay full */
+.timeline-fill.completed {
+  width: 100%;
+}
+
+/* Status: Active slide animates */
+.timeline-fill.filling {
+  animation-name: fillBar;
+  animation-timing-function: linear;
+  animation-fill-mode: forwards;
+}
+
+/* The Animation Keyframes */
+@keyframes fillBar {
+  from { width: 0%; }
+  to { width: 100%; }
+}
+
+/* Mobile Tweak */
+@media (max-width: 768px) {
+  .hero-image-slider {
+    min-height: 400px;
+  }
+  .slider-timeline {
+    width: 90%;
+    bottom: 20px;
+  }
+}
   }
 
   // BOTTOM FEATURES SECTION
@@ -1096,26 +1186,122 @@ $text-dim: #9ca3af;
       max-width: 350px;
     }
 
-    .contact-btn {
-      background: rgba(255, 255, 255, 0.1); // Glassmorphic look
-      color: $text-light;
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      padding: 12px 24px;
-      border-radius: 20px;
-      font-size: 1rem;
-      font-weight: 500;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      transition: all 0.3s ease;
+ // Variables (guessing based on your snippet)
+$text-light: #fff;
+$accent: #865f1d; // Hausswann Gold
 
-      &:hover {
-        background: $accent;
-        border-color: $accent;
-        transform: translateY(-2px);
+.contact-wrapper {
+  position: relative;
+  display: inline-flex; // Keeps the wrapper hugging the button size
+  align-items: center;
+  z-index: 10; // Ensures it sits above other content
+  
+  // 1. The Main Button (Your existing styles + Z-Index fix)
+  .contact-btn {
+    position: relative;
+    z-index: 5; // Must be higher than the slider
+    background: rgba(255, 255, 255, 0.1); 
+    color: $text-light;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 12px 24px;
+    border-radius: 20px;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(5px); // Adds real blur for glass effect
+
+    &:hover {
+      background: $accent;
+      border-color: $accent;
+      // Removed translateY so it doesn't detach from the slider visually
+    }
+  }
+
+  // 2. The Sliding Container
+  .social-slider {
+    position: absolute;
+    left: 0; // Starts sitting directly behind the main button
+    top: 0;
+    height: 100%;
+    width: auto;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding-left: 10px; // Spacing for when it slides out
+    z-index: 1; // Sits BEHIND the button
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); // Bouncy effect
+  }
+
+  // 3. The Individual Social Icons
+  .social-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.2rem;
+    transition: 0.2s;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    text-decoration: none;
+
+    &:hover {
+      transform: scale(1.1);
+    }
+
+    &.insta:hover { background: #E1306C; border-color: #E1306C; }
+    &.whats:hover { background: #25D366; border-color: #25D366; }
+  }
+
+  // 4. THE ACTIVE STATE (When isOpen is true)
+  &.open {
+    .contact-btn {
+      background: $text-light; // Invert colors to show it's active
+      color: #333;
+      border-radius: 20px 0 0 20px; // Flatten right side to connect visually
+      border-right: none; // Remove border to merge
+    }
+
+    .social-slider {
+      left: 100%; // Slide completely to the right of the button
+      opacity: 1;
+      visibility: visible;
+      background: rgba(255, 255, 255, 0.1); // Background for the extended slide
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-left: none; // Merge with button
+      border-radius: 0 20px 20px 0; // Round the far right
+      padding-right: 15px; // Add space at the end
+    }
+  }
+}
+
+// 5. MOBILE RESPONSIVENESS
+@media (max-width: 480px) {
+  .contact-wrapper {
+    // On small screens, prevent it from sliding off the screen
+    &.open {
+      .social-slider {
+        // Option A: Slide slightly less if screen is tight
+        left: 90%; 
       }
     }
+    
+    // Make icons slightly smaller on mobile
+    .social-icon {
+      width: 35px;
+      height: 35px;
+      font-size: 1rem;
+    }
+  }
+}
   }
 
   // --- RIGHT COLUMN ---

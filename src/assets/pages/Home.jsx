@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {useState, useEffect} from 'react'
 import { useGoogleReviews } from './useGoogleReviews'; // Import the hook
 import heroImg from "../stock/varenda.webp"
 import { CiBookmarkPlus } from "react-icons/ci";
@@ -12,7 +12,7 @@ import {
   FaPlus, 
   FaTimes,
   FaChevronLeft, FaChevronRight, FaRegImages, FaStar, FaGoogle, FaQuoteLeft, FaUserCircle, FaPenFancy, FaMinus, FaEnvelope,
-FaMapMarkerAlt, FaPhoneAlt, FaDirections, FaWhatsapp
+FaMapMarkerAlt, FaPhoneAlt, FaDirections, FaWhatsapp, FaInstagram
 } from "react-icons/fa";
 import { FcGoogle } from "react-icons/fc";
 
@@ -147,11 +147,25 @@ const faqData = [
 ];
 
 //book now
-const WHATSAPP_NUMBER = "23412345677890"; // Format: CountryCode + Number (No + or spaces)
+const WHATSAPP_NUMBER = "2348029105309"; // Format: CountryCode + Number (No + or spaces)
 const WHATSAPP_MESSAGE = "Hello, I am interested in booking a stay at Hausswann.";
 const WHATSAPP_URL = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(WHATSAPP_MESSAGE)}`;
 
-function Home() {
+  //hero slides
+  const heroSlides = [
+  { img: heroImg, alt: "Welcome to Oasis" },
+  { img: exterior1, alt: "Modern Exterior" },
+  { img: livingroom1, alt: "Luxury Living" },
+  { img: master1, alt: "Master Suite" },
+  { img: dining1, alt: "Fine Dining" },
+  { img: exterior3, alt: "Night View" },
+];
+
+const SLIDE_DURATION = 5000;
+
+
+
+function Home({ isOpen, setIsOpen }) {
 
 const [activeFilter, setActiveFilter] = useState('All');
   // const [selectedImage, setSelectedImage] = useState(null);
@@ -213,6 +227,18 @@ const [activeFilter, setActiveFilter] = useState('All');
     setActiveIndex(activeIndex === index ? null : index);
   };
 
+const [currentHeroIndex, setCurrentHeroIndex] = useState(0);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentHeroIndex((prev) => (prev + 1) % heroSlides.length);
+    }, SLIDE_DURATION);
+
+    return () => clearInterval(timer);
+  }, []);
+
+  
+
   return (
     <div className='home'>
       
@@ -251,9 +277,42 @@ const [activeFilter, setActiveFilter] = useState('All');
             </div>
           </div>
           
-          <div className="hero-image">
-            <img src={heroImg} alt="Hausswann Exterior" loading="eager"        // Load immediately
-            fetchPriority="high"/>
+      <div className="hero-image-slider">
+            
+            {/* The Images */}
+            {heroSlides.map((slide, index) => (
+              <div 
+                key={index}
+                className={`slider-item ${index === currentHeroIndex ? 'active' : ''}`}
+              >
+                <img 
+                  src={slide.img} 
+                  alt={slide.alt} 
+                  loading={index === 0 ? "eager" : "lazy"} // Only eager load the first one
+                  fetchPriority={index === 0 ? "high" : "auto"}
+                />
+              </div>
+            ))}
+
+            {/* The Timeline / Progress Bars */}
+            <div className="slider-timeline">
+              {heroSlides.map((_, index) => (
+                <div 
+                  key={index} 
+                  className="timeline-track"
+                  onClick={() => setCurrentHeroIndex(index)} // Allow clicking to jump
+                >
+                  <div 
+                    className={`timeline-fill ${
+                      index === currentHeroIndex ? 'filling' : 
+                      index < currentHeroIndex ? 'completed' : ''
+                    }`}
+                    style={{ animationDuration: `${SLIDE_DURATION}ms` }}
+                  ></div>
+                </div>
+              ))}
+            </div>
+
           </div>
         </div>
 
@@ -329,7 +388,7 @@ const [activeFilter, setActiveFilter] = useState('All');
             {/* Left: Image */}
             <div className="content-image">
               {/* You can swap this for a specific amenities image if you have one */}
-              <img src={heroImg} alt="Interior Amenities" loading="lazy"       // Only load when scrolled to
+              <img src={livingroom1} alt="Interior Amenities" loading="lazy"       // Only load when scrolled to
                 decoding="async"/>
             </div>
 
@@ -582,9 +641,42 @@ const [activeFilter, setActiveFilter] = useState('All');
               Everything you need to know about your stay at The Oasis. 
               If you have any other questions, please email us.
             </p>
-            <button className="contact-btn">
-              Contact us <FaEnvelope />
+         <div className={`contact-wrapper ${isOpen ? 'open' : ''}`}>
+      
+            {/* The Main Button */}
+            <button 
+              className="contact-btn" 
+              onClick={() => setIsOpen(!isOpen)}
+              aria-label="Toggle contact options"
+            >
+              {isOpen ? 'Close' : 'Contact us'} 
+              {isOpen ? <FaTimes /> : <FaEnvelope />}
             </button>
+
+            {/* The Sliding Social Icons */}
+            <div className="social-slider">
+              
+              <a 
+                href="https://instagram.com/hausswann" 
+                target="_blank" 
+                rel="noreferrer" 
+                className="social-icon insta"
+              >
+                <FaInstagram />
+              </a>
+
+              <a 
+                href="https://wa.me/2348029105309" 
+                target="_blank" 
+                rel="noreferrer" 
+                className="social-icon whats"
+              >
+                <FaWhatsapp />
+              </a>
+
+            </div>
+
+          </div>
           </div>
 
           {/* RIGHT COLUMN: Accordion List */}
@@ -630,8 +722,7 @@ const [activeFilter, setActiveFilter] = useState('All');
             {/* <div className="divider"></div> */}
           </div>
           <p className="description">
-            Nestled in the heart of Victoria Island, The Oasis offers a private 
-            escape just minutes from the city's finest dining and business hubs.
+         Hausswann offers comfort and privacy in Port Harcourt, set in a calm yet bubbling, easy-to-find area with direct access to major roads.
           </p>
         </div>
 
@@ -662,8 +753,20 @@ const [activeFilter, setActiveFilter] = useState('All');
 
           <div className="info-group">
             <h3>Contact</h3>
-            <p className="contact-link"><FaPhoneAlt /> +234 123 4567 7890</p>
-            <p className="contact-link"><FaEnvelope /> hausswann@gmail.com</p>
+            <p 
+            className="contact-link" 
+            onClick={() => window.location.href = 'tel:+2348029105309'}
+            style={{ cursor: 'pointer' }}
+          >
+            <FaPhoneAlt /> +234 802 910 5309
+          </p>
+            <p 
+          className="contact-link" 
+          onClick={() => window.location.href = 'mailto:hausswann@gmail.com'}
+          style={{ cursor: 'pointer' }}
+        >
+          <FaEnvelope /> hausswann@gmail.com
+        </p>
           </div>
 
        <a

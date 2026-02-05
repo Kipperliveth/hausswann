@@ -1,7 +1,7 @@
 import React from 'react'
 import logo from "../stock/logofooter.svg"
 
-function Footer() {
+function Footer({ onContactClick }) {
   
 
   return (
@@ -23,7 +23,12 @@ function Footer() {
                         <a href="#location">Location</a>
                         <a href="#faqs">Faqs</a>
                         <a href="#reviews">Reviews</a>
-                        <a href="">Contact us</a>
+                     <a 
+                      href="#faqs" 
+                      onClick={() => onContactClick()} // Removed the (e)
+                    >
+                      Contact us
+                    </a>
                     </div>
 
                        <div className="footer-navigation">
